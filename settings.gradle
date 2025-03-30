@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "TomatoBlackXposed"
+include ':app'
