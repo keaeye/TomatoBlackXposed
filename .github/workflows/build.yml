@@ -1,41 +1,52 @@
-name: Build Xposed Module APK
+name: Build APK and Upload Artifact
 
 on:
   push:
     branches:
-      - main  # 当 push 到 main 分支时触发
+      - main  # 监听 main 分支的推送
   pull_request:
     branches:
-      - main  # 允许 PR 触发构建
+      - main  # 监听对 main 分支的 Pull Request
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # 在 Ubuntu 服务器上运行
+    runs-on: ubuntu-latest  # 使用 Ubuntu 最新的 GitHub Runner
 
     steps:
       - name: 检出代码
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4  # 检出代码库
 
       - name: 设置 JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'  # 使用 Eclipse Temurin JDK
-          java-version: '17'
+          distribution: 'temurin'  # 使用 Temurin JDK
+          java-version: '17'  # 使用 JDK 17
 
-      - name: 安装 Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: 安装 Android SDK
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip  # 下载 SDK 工具
+          unzip commandlinetools-linux-7583922_latest.zip -d $HOME/android-sdk  # 解压工具
+          echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV  # 设置环境变量
+          echo "export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_ENV  # 更新 PATH
+          yes | sdkmanager --licenses  # 同意 SDK 许可协议
+          sdkmanager "platform-tools" "build-tools;30.0.3" "platforms;android-30"  # 安装平台工具
+
+      - name: 设置 Gradle
+        uses: gradle/actions/setup-gradle@v3  # 设置 Gradle
 
       - name: 初始化 Gradle Wrapper
-        run: gradle wrapper  # 生成 gradlew
+        run: gradle wrapper  # 初始化 Gradle Wrapper
 
       - name: 赋予 gradlew 可执行权限
-        run: chmod +x gradlew
+        run: chmod +x gradlew  # 使 gradlew 文件可执行
 
       - name: 编译 APK
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug  # 执行构建任务，生成调试 APK
 
-      - name: 上传 APK 作为构建产物
-        uses: actions/upload-artifact@v4
+      - name: 上传 APK
+        uses: actions/upload-artifact@v4  # 上传构建生成的 APK
         with:
           name: Xposed-Module-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk  # 设置 APK 的路径
