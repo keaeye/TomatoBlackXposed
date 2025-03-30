@@ -5,26 +5,38 @@ plugins {
 
 android {
     namespace 'com.black.tomatobook'
-    compileSdk 33
+    compileSdk 33  // 使用 Android 33 SDK
 
     defaultConfig {
-        applicationId 'com.black.tomatobook'
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        applicationId 'com.black.tomatobook'  // 设置应用的包名
+        minSdk 21  // 设置最小支持版本
+        targetSdk 33  // 设置目标 SDK 版本
+        versionCode 1  // 版本号
+        versionName "1.0"  // 版本名称
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled false  // 禁用混淆
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'  // 使用 ProGuard 配置
         }
+    }
+
+    // 允许 Java 8 特性，如果使用 Java 8 API，可能需要这个配置
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // 如果你需要 Kotlin 代码支持，启用 Kotlin 编译选项
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
 dependencies {
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'de.robv.android.xposed:api:82' // Xposed API
+    implementation 'de.robv.android.xposed:api:82'  // Xposed API
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.7.21"  // 确保 Kotlin 标准库的版本正确
 }
