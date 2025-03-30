@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.black.tomatobook">
+    
+    <application
+        android:allowBackup="false"
+        android:label="TomatoBlackXposed"
+        android:theme="@style/Theme.AppCompat">
+        
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="番茄小说黑色主题模块" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="82" />
+
+    </application>
+</manifest>
